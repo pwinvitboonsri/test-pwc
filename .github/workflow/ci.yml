@@ -1,0 +1,22 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - name: Prepare SQLite
+        run: |
+          npx prisma migrate deploy
+          # optional: seed small set for CI speed
+          node -e "console.log('skip seeding in CI for speed')"
+      - run: npm run build

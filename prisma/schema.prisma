@@ -12,7 +12,7 @@ model Product {
   name          String
   description   String
   category      String
-  price         Decimal  @db.Decimal(10, 2)
+  price         Int
   imageUrl      String
   averageRating Float    @default(0)
   reviewCount   Int      @default(0)
