@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  category      String
+  price         Decimal  @db.Decimal(10, 2)
+  imageUrl      String
+  averageRating Float    @default(0)
+  reviewCount   Int      @default(0)
+  reviews       Review[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([price])
+  @@index([averageRating])
+  @@index([name])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  authorName String
+  title      String
+  body       String
+  rating     Int
+  createdAt  DateTime @default(now())
+
+  @@index([productId, createdAt])
+  @@index([productId, rating])
+}
